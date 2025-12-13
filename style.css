@@ -94,12 +94,11 @@ body {
     -webkit-backdrop-filter: blur(30px);
     box-shadow: var(--glass-shadow);
     border: 1px solid var(--glass-border);
-    /* 🆕 修复点：给所有玻璃弹窗基类增加圆角 */
     border-radius: 24px; 
 }
 
 /* ========================================= */
-/* 🔒 登录层样式 (重点修复区域) */
+/* 🔒 登录层样式 */
 /* ========================================= */
 .login-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -114,11 +113,8 @@ body {
 .login-card {
     width: 100%; max-width: 360px; padding: 40px 32px;
     display: flex; flex-direction: column; align-items: center;
-    
-    /* 🔴 核心修复：这里加上圆角 24px */
-    border-radius: 24px; 
-    /* 防止内部内容溢出切角 */
-    overflow: hidden; 
+    border-radius: 24px !important; 
+    overflow: hidden !important; 
 }
 
 .login-icon-box {
@@ -165,6 +161,7 @@ body {
 }
 .icon-btn:hover { background: rgba(120, 120, 128, 0.15); transform: scale(1.05); }
 
+/* 基础主按钮样式 */
 .primary-btn, .primary-btn-sm {
     background: var(--primary); color: white; border: none;
     border-radius: 20px; font-weight: 600; cursor: pointer;
@@ -175,6 +172,22 @@ body {
 .primary-btn { font-size: 16px; }
 .primary-btn:hover, .primary-btn-sm:hover { background: var(--primary-active); transform: scale(1.02); }
 .primary-btn:active, .primary-btn-sm:active { transform: scale(0.95); }
+
+/* 🆕 蓝色液态圆形按钮 (用于新增) */
+.circle-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 400;
+    /* 增强的液态/玻璃质感 */
+    background: linear-gradient(135deg, var(--primary), var(--primary-active));
+    box-shadow:
+        0 8px 20px rgba(0, 122, 255, 0.3), /* 外部光晕 */
+        inset 0 2px 4px rgba(255, 255, 255, 0.3), /* 顶部高光 */
+        inset 0 -3px 6px rgba(0, 0, 0, 0.15); /* 底部阴影 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
 .toolbar-area {
     position: fixed; top: var(--nav-height); left: 0; right: 0;
@@ -216,7 +229,6 @@ body {
 .memo-card {
     background: var(--bg-card);
     border: 1px solid var(--glass-border); 
-    /* 统一卡片圆角 */
     border-radius: 24px; 
     padding: 18px;
     cursor: pointer; transition: transform 0.2s;
@@ -322,6 +334,10 @@ body {
 .preview-header { justify-content: space-between; align-items: center; }
 .header-actions { display: flex; gap: 12px; align-items: center; }
 .edit-icon-btn { background: rgba(120, 120, 128, 0.1); width: 36px; height: 36px; font-size: 16px; color: var(--text-main); }
+
+/* 🆕 危险操作图标按钮 (红色) */
+.danger-icon-btn { color: var(--danger); }
+.danger-icon-btn:hover { background: rgba(255, 59, 48, 0.1); }
 
 .preview-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .meta-date { font-size: 14px; font-weight: 600; color: var(--text-sub); background: rgba(120, 120, 128, 0.1); padding: 4px 10px; border-radius: 8px; }

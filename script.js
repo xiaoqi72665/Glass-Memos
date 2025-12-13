@@ -51,7 +51,7 @@ async function checkAuth() {
 async function unlockApp() {
     document.getElementById('loginOverlay').classList.add('hidden');
     
-    // 🚀 核心改动：登录成功后，优先从云端拉取最新数据
+    // 🚀 登录成功后，优先从云端拉取最新数据
     if (API_URL) {
         await syncDataFromCloud();
     } else {
@@ -72,14 +72,13 @@ async function syncDataFromCloud() {
         });
         if (res.ok) {
             const cloudData = await res.json();
-            // 简单的同步策略：以云端为准（如果你希望合并，逻辑会复杂很多，单人使用直接覆盖即可）
-            if (Array.isArray(cloudData) && cloudData.length > 0) {
+            // 简单的同步策略：以云端为准
+            if (Array.isArray(cloudData)) {
                 notes = cloudData;
-                // 更新本地缓存
                 localStorage.setItem(STORE_KEY, JSON.stringify(notes));
                 console.log("☁️ 云端数据同步成功");
             } else {
-                loadNotesLocal(); // 云端为空，加载本地
+                loadNotesLocal();
             }
         } else {
             loadNotesLocal();
@@ -345,6 +344,15 @@ function openPreview(id) {
     const tagsArea = document.getElementById('previewTags');
     tagsArea.innerHTML = note.tags.map(t => `<span class="tag-badge">#${t}</span>`).join('');
 
+    // 🆕 为预览页的删除按钮绑定事件
+    document.getElementById('btnDeletePreview').onclick = () => {
+        if (confirm('确定要删除这条记录吗？此操作无法撤销。')) {
+            notes = notes.filter(n => n.id !== id);
+            saveStorage(); // 保存并同步到云端
+            closePreviewModal();
+        }
+    };
+
     document.getElementById('btnToEdit').onclick = () => {
         closePreviewModal();
         setTimeout(() => openEditModal(note.id), 50);
@@ -440,7 +448,6 @@ function saveNote() {
         if (idx > -1) notes[idx] = noteData;
     } else { notes.push(noteData); }
     
-    // 🟢 保存时触发同步
     saveStorage(); 
     closeEditModal();
 }
@@ -452,7 +459,6 @@ function deleteNote() {
     saveStorage(); closeEditModal();
 }
 
-// 🟢 导入时也触发同步
 function exportData() {
     const blob = new Blob([JSON.stringify(notes, null, 2)], {type: 'application/json'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `growth_memos_${new Date().toISOString().slice(0,10)}.json`; a.click();
@@ -468,7 +474,7 @@ function importData(e) {
                     const map = new Map(notes.map(n => [n.id, n]));
                     data.forEach(n => map.set(n.id, n));
                     notes = Array.from(map.values());
-                    saveStorage(); // 保存并上传
+                    saveStorage(); 
                     alert('导入成功');
                 }
             }
