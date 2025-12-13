@@ -1,5 +1,5 @@
 // --- 配置 ---
-const API_URL = ""; 
+const API_URL = "https://growth-memos-auth.2536319853.workers.dev"; 
 const STORE_KEY = 'glass_memos_v2';
 const THEME_KEY = 'glass_memos_theme';
 const TOKEN_KEY = 'growth_memos_token';
