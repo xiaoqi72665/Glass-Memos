@@ -178,15 +178,33 @@ body {
     width: 44px; height: 44px;
     border-radius: 50%;
     padding: 0;
+    
+    /* Flexbox 居中三件套 (保持不变，这对 SVG 居中至关重要) */
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px; font-weight: 400;
-    /* 增强的液态/玻璃质感 */
+    
+    /* ✨ 修改：移除 font-size 和 font-weight，因为不再使用文字了 */
+    /* font-size: 22px; font-weight: 400;  <-- 删除这两行 */
+    
     background: linear-gradient(135deg, var(--primary), var(--primary-active));
     box-shadow:
-        0 8px 20px rgba(0, 122, 255, 0.3), /* 外部光晕 */
-        inset 0 2px 4px rgba(255, 255, 255, 0.3), /* 顶部高光 */
-        inset 0 -3px 6px rgba(0, 0, 0, 0.15); /* 底部阴影 */
+        0 8px 20px rgba(0, 122, 255, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* ✨ 新增：确保 SVG 颜色继承按钮文字颜色 (白色) */
+    color: white; 
+}
+
+/* ✨ 新增：防止 SVG 点击事件穿透或变形 (可选，加上更稳) */
+.circle-btn svg {
+    pointer-events: none;
+    transition: transform 0.3s ease;
+}
+
+/* 鼠标悬停时让加号旋转一下，增加交互趣味 (可选) */
+.circle-btn:hover svg {
+    transform: rotate(90deg);
 }
 
 .toolbar-area {
