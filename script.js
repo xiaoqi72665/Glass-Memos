@@ -1,4 +1,5 @@
 // --- 配置 ---
+// ⚠️ 填入你的 Worker 地址，例如 "https://growth-memos-auth.xxx.workers.dev"
 const API_URL = "https://growth-memos-auth.2536319853.workers.dev"; 
 const STORE_KEY = 'glass_memos_v2';
 const THEME_KEY = 'glass_memos_theme';
@@ -12,16 +13,18 @@ let searchQuery = '';
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     
+    // 1. 尝试自动登录
     checkAuth().then(isAuthenticated => {
         if (isAuthenticated) {
-            unlockApp();
+            unlockApp(); // 验证通过，进入应用并拉取数据
         }
     });
 
     bindLoginEvents();
 });
 
-// --- 🔐 认证逻辑 ---
+// --- 🔐 认证与数据同步 ---
+
 async function checkAuth() {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) return false;
@@ -41,16 +44,84 @@ async function checkAuth() {
         } catch (e) {
             return false;
         }
+    }
+    return true; // 本地演示模式
+}
+
+async function unlockApp() {
+    document.getElementById('loginOverlay').classList.add('hidden');
+    
+    // 🚀 核心改动：登录成功后，优先从云端拉取最新数据
+    if (API_URL) {
+        await syncDataFromCloud();
     } else {
-        return true;
+        loadNotesLocal(); // 降级：仅加载本地
+    }
+    
+    renderApp();
+    bindAppEvents();
+}
+
+// 📥 从云端拉取数据
+async function syncDataFromCloud() {
+    const token = localStorage.getItem(TOKEN_KEY);
+    try {
+        const res = await fetch(`${API_URL}/api/data`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const cloudData = await res.json();
+            // 简单的同步策略：以云端为准（如果你希望合并，逻辑会复杂很多，单人使用直接覆盖即可）
+            if (Array.isArray(cloudData) && cloudData.length > 0) {
+                notes = cloudData;
+                // 更新本地缓存
+                localStorage.setItem(STORE_KEY, JSON.stringify(notes));
+                console.log("☁️ 云端数据同步成功");
+            } else {
+                loadNotesLocal(); // 云端为空，加载本地
+            }
+        } else {
+            loadNotesLocal();
+        }
+    } catch (e) {
+        console.error("同步失败，加载本地数据", e);
+        loadNotesLocal();
     }
 }
 
-function unlockApp() {
-    document.getElementById('loginOverlay').classList.add('hidden');
-    loadNotes();
+// 📤 推送数据到云端
+async function pushDataToCloud() {
+    if (!API_URL) return;
+    const token = localStorage.getItem(TOKEN_KEY);
+    try {
+        await fetch(`${API_URL}/api/data`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(notes)
+        });
+        console.log("☁️ 数据已保存到云端");
+    } catch (e) {
+        console.error("保存到云端失败", e);
+    }
+}
+
+function loadNotesLocal() {
+    const raw = localStorage.getItem(STORE_KEY);
+    notes = raw ? JSON.parse(raw) : [];
+}
+
+// 🟢 修改保存逻辑：同时保存本地和云端
+function saveStorage() {
+    // 1. 存本地 (作为缓存/离线备份)
+    localStorage.setItem(STORE_KEY, JSON.stringify(notes));
+    // 2. 存云端
+    pushDataToCloud();
+    // 3. 渲染
     renderApp();
-    bindAppEvents();
 }
 
 async function handleLogin() {
@@ -75,7 +146,7 @@ async function handleLogin() {
             const data = await res.json();
             if (data.ok && data.token) {
                 localStorage.setItem(TOKEN_KEY, data.token);
-                unlockApp();
+                await unlockApp(); // 等待数据拉取完成
             } else {
                 msg.textContent = '密码错误';
             }
@@ -83,12 +154,11 @@ async function handleLogin() {
             msg.textContent = '网络错误';
         }
     } else {
-        // [演示模式] 任意密码解锁
+        // 演示模式
         setTimeout(() => {
-            const fakeToken = "demo-token-" + Date.now();
-            localStorage.setItem(TOKEN_KEY, fakeToken);
+            localStorage.setItem(TOKEN_KEY, "demo");
             unlockApp();
-        }, 600);
+        }, 500);
     }
     
     btn.classList.remove('loading');
@@ -113,7 +183,6 @@ function bindLoginEvents() {
 function initTheme() {
     const savedTheme = localStorage.getItem(THEME_KEY);
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.documentElement.setAttribute('data-theme', 'dark');
         updateThemeIcon(true);
@@ -126,7 +195,6 @@ function initTheme() {
 function toggleTheme() {
     const html = document.documentElement;
     const isDark = html.getAttribute('data-theme') === 'dark';
-    
     if (isDark) {
         html.removeAttribute('data-theme');
         localStorage.setItem(THEME_KEY, 'light');
@@ -154,7 +222,6 @@ function updateThemeIcon(isDark) {
 function bindAppEvents() {
     document.getElementById('btnTheme').onclick = toggleTheme;
     document.getElementById('btnLogout').onclick = handleLogout;
-    
     document.getElementById('btnNew').onclick = () => openEditModal();
     document.getElementById('btnExport').onclick = exportData;
     document.getElementById('btnImportTrigger').onclick = () => document.getElementById('importFile').click();
@@ -182,17 +249,7 @@ function bindAppEvents() {
     });
 }
 
-// --- 数据/CRUD 逻辑 ---
-function loadNotes() {
-    const raw = localStorage.getItem(STORE_KEY);
-    notes = raw ? JSON.parse(raw) : [];
-}
-
-function saveStorage() {
-    localStorage.setItem(STORE_KEY, JSON.stringify(notes));
-    renderApp();
-}
-
+// --- 渲染逻辑 ---
 function renderApp() {
     renderTags();
     renderList();
@@ -299,9 +356,7 @@ function createDetailItem(label, content) {
     return `<div class="detail-item"><span class="detail-label">${label}</span><div class="detail-content">${safeHtml(content)}</div></div>`;
 }
 
-function closePreviewModal() {
-    document.getElementById('previewOverlay').classList.remove('open');
-}
+function closePreviewModal() { document.getElementById('previewOverlay').classList.remove('open'); }
 
 function openEditModal(id = null) {
     const modal = document.getElementById('modalOverlay');
@@ -384,7 +439,10 @@ function saveNote() {
         const idx = notes.findIndex(n => n.id === id);
         if (idx > -1) notes[idx] = noteData;
     } else { notes.push(noteData); }
-    saveStorage(); closeEditModal();
+    
+    // 🟢 保存时触发同步
+    saveStorage(); 
+    closeEditModal();
 }
 
 function deleteNote() {
@@ -394,6 +452,7 @@ function deleteNote() {
     saveStorage(); closeEditModal();
 }
 
+// 🟢 导入时也触发同步
 function exportData() {
     const blob = new Blob([JSON.stringify(notes, null, 2)], {type: 'application/json'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `growth_memos_${new Date().toISOString().slice(0,10)}.json`; a.click();
@@ -405,11 +464,12 @@ function importData(e) {
         try {
             const data = JSON.parse(evt.target.result);
             if (Array.isArray(data)) {
-                if(confirm('导入将合并数据。继续吗？')) {
+                if(confirm('导入将合并数据并同步到云端。继续吗？')) {
                     const map = new Map(notes.map(n => [n.id, n]));
                     data.forEach(n => map.set(n.id, n));
                     notes = Array.from(map.values());
-                    saveStorage(); alert('导入成功');
+                    saveStorage(); // 保存并上传
+                    alert('导入成功');
                 }
             }
         } catch(err) { alert('文件格式错误'); }
