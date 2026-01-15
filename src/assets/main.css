@@ -245,13 +245,64 @@ body {
     padding: 0 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    /* Changed from center to space-between */
     position: relative;
+    gap: 16px;
+}
+
+.navbar-left {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-search {
+    flex: 1;
+    max-width: 400px;
+    /* Limit width on desktop */
+    display: flex;
+    justify-content: center;
+}
+
+.search-wrapper-nav {
+    position: relative;
+    width: 100%;
+    height: 36px;
+}
+
+.search-icon-nav {
+    position: absolute;
+    left: 10px;
+    top: 9px;
+    color: var(--text-sub);
+    pointer-events: none;
+}
+
+.search-input-nav {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: var(--bg-input);
+    border-radius: 99px;
+    /* Round pill shape for nav search */
+    padding: 0 12px 0 34px;
+    font-size: 14px;
+    color: var(--text-main);
+    transition: all 0.2s;
+}
+
+.search-input-nav:focus {
+    background: rgba(120, 120, 128, 0.2);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
 }
 
 .navbar-actions {
-    position: absolute;
-    right: 16px;
+    /* Removed absolute positioning */
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .app-title {
@@ -363,7 +414,8 @@ body {
     top: var(--nav-height);
     left: 0;
     right: 0;
-    height: var(--toolbar-height);
+    height: 50px;
+    /* Reduced height as search is gone */
     z-index: var(--z-toolbar);
     display: flex;
     flex-direction: column;
@@ -375,9 +427,12 @@ body {
     max-width: var(--content-width);
     padding: 0 16px;
     margin: 0 auto;
+    /* Restore centering */
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    /* Removed flex-direction column */
+    align-items: center;
+    justify-content: flex-start;
+    /* Ensure left alignment */
 }
 
 .search-wrapper {
@@ -415,6 +470,15 @@ body {
     overflow-x: auto;
     scrollbar-width: none;
     padding-bottom: 2px;
+    width: 100%;
+    /* Force full width */
+    justify-content: flex-start;
+    /* Force start alignment */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+    padding-left: 4px;
+    /* Slight padding */
+    padding-right: 4px;
 }
 
 .tag-btn {
@@ -728,13 +792,13 @@ body {
 }
 
 .small-area {
-    min-height: 100px;
+    min-height: 200px;
 }
 
 /* 电脑端增加内容输入区域高度 */
 @media (min-width: 820px) {
     .small-area {
-        min-height: 150px;
+        min-height: 300px;
         /* 增加电脑端输入区域高度 */
     }
 
