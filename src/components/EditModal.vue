@@ -93,29 +93,32 @@ function close() {
     resetAiState()
 }
 
+// Note: Reset AI state logic remains same
 function resetAiState() {
-    aiState.summaryLoading = false
+    aiState.processing = false
     aiState.summaryCandidate = null
-    aiState.polishLoading = false
     aiState.polishCandidate = null
 }
 
-async function handleGenerateSummary() {
+async function handleAIProcess() {
     if (!form.fact) {
         alert('请先填写"发生了什么"')
         return
     }
     
-    aiState.summaryLoading = true
+    // Reset previous candidates
     aiState.summaryCandidate = null
+    aiState.polishCandidate = null
+    aiState.processing = true
     
-    const res = await aiService.generateSummary(form.fact)
-    aiState.summaryLoading = false
+    const res = await aiService.processNote(form.fact)
+    aiState.processing = false
     
     if (res.ok) {
-        aiState.summaryCandidate = res.text
+        aiState.summaryCandidate = res.summary
+        aiState.polishCandidate = res.polishedFact
     } else {
-        alert('AI 生成失败: ' + res.reason)
+        alert('AI 处理失败: ' + res.reason)
     }
 }
 
@@ -128,22 +131,6 @@ function applySummary() {
 
 function discardSummary() {
     aiState.summaryCandidate = null
-}
-
-async function handlePolish() {
-    if (!form.fact) return
-    
-    aiState.polishLoading = true
-    aiState.polishCandidate = null
-    
-    const res = await aiService.polishContent(form.fact)
-    aiState.polishLoading = false
-    
-    if (res.ok) {
-        aiState.polishCandidate = res.text
-    } else {
-        alert('AI 润色失败: ' + res.reason)
-    }
 }
 
 function applyPolish() {
@@ -241,7 +228,7 @@ defineExpose({ open, close })
                     <!-- Candidate View for Summary -->
                     <div v-if="aiState.summaryCandidate" class="ai-candidate-box">
                         <div class="candidate-header">
-                            <span class="ai-badge">AI 生成</span>
+                            <span class="ai-badge">AI 候选 · 一句话总结</span>
                             <div class="candidate-actions">
                                 <button class="action-btn apply" @click="applySummary">应用</button>
                                 <button class="action-btn discard" @click="discardSummary">舍弃</button>
@@ -255,8 +242,8 @@ defineExpose({ open, close })
                 <div class="form-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <label class="form-label" style="margin-bottom:0">发生了什么（客观事实）</label>
-                        <button class="ai-btn" @click="handlePolish" :disabled="aiState.polishLoading">
-                            {{ aiState.polishLoading ? '✨ 润色中...' : '✨ AI 润色' }}
+                        <button class="ai-btn" @click="handleAIProcess" :disabled="aiState.processing">
+                            {{ aiState.processing ? '✨ 思考中...' : '✨ AI 辅助记录' }}
                         </button>
                     </div>
 
@@ -266,7 +253,7 @@ defineExpose({ open, close })
                     <!-- Candidate View for Polish -->
                     <div v-if="aiState.polishCandidate" class="ai-candidate-box polish-box">
                         <div class="candidate-header">
-                            <span class="ai-badge">AI 生成 (预览)</span>
+                            <span class="ai-badge">AI 候选 · 润色后的事实</span>
                             <div class="candidate-actions">
                                 <button class="action-btn apply" @click="applyPolish">应用覆盖</button>
                                 <button class="action-btn discard" @click="discardPolish">舍弃</button>

@@ -1,30 +1,38 @@
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || ''; // Fallback to empty if not set, but it should be set
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 export const aiService = {
     /**
-     * Generate a one-sentence summary strictly based on facts.
+     * Process note: Polish fact AND Generate Summary in one go.
      * @param {string} content 
-     * @returns {Promise<{ok: boolean, text?: string, reason?: string}>}
+     * @returns {Promise<{ok: boolean, polishedFact?: string, summary?: string, reason?: string}>}
      */
-    async generateSummary(content) {
-        return this._callWorker('/ai/summary', content);
+    async processNote(content) {
+        return this._callWorker('/ai/process', content);
     },
 
-    /**
-     * Polish fact description (de-oralize, fix grammar).
-     * @param {string} content 
-     * @returns {Promise<{ok: boolean, text?: string, reason?: string}>}
-     */
+    // Deprecated single purpose methods kept for compatibility if needed, 
+    // but effectively we are moving to processNote.
+    async generateSummary(content) {
+        return this.processNote(content).then(res => ({
+            ok: res.ok,
+            text: res.summary,
+            reason: res.reason
+        }));
+    },
+
     async polishContent(content) {
-        return this._callWorker('/ai/polish', content);
+        return this.processNote(content).then(res => ({
+            ok: res.ok,
+            text: res.polishedFact,
+            reason: res.reason
+        }));
     },
 
     async _callWorker(endpoint, content) {
         if (!content) return { ok: false, reason: 'Empty content' };
 
         try {
-            // Ensure we don't have double slashes if base has trailing slash
             const baseUrl = API_BASE_URL.replace(/\/$/, '');
             const url = `${baseUrl}${endpoint}`;
 

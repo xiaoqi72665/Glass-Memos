@@ -1,67 +1,94 @@
-# Glass Memos (映照)
+# 映照 (Glass Memos)
 
-一个专注于自我观察与记录的 Vue 3 应用。
+<div align="center">
+  <img src="/public/Logo.svg" width="100" height="100" alt="Glass Memos Logo" />
+  <h3>看见即治愈</h3>
+  <p>一个专注于自我观察、记录与觉察的现代化 Web 应用。</p>
+</div>
 
-## 功能特性
+---
 
-- **Vue 3 + Vite**: 现代化、高性能的前端架构。
-- **PWA 支持**: 可作为应用安装到手机。
-- **云端同步**: 支持与 Cloudflare Workers 后端同步数据。
-- **暗色模式**: 支持系统自动或手动切换深色主题。
-- **完全响应式**: 适配桌面端与移动端操作习惯。
-- **AI 辅助记录**: 提供“一句话总结”生成与“客观事实”润色功能 (需配置)。
+## ✨ 项目简介
 
-## AI 功能说明
+**映照 (Glass Memos)** 是一个基于 **Vue 3** 构建的渐进式 Web 应用 (PWA)。它不只是一个备忘录，更是一个帮助你练习“客观观察”的工具。通过分离“客观事实”、“情绪反应”和“模式识别”，帮助你从混乱的思绪中抽离，建立清晰的自我认知。
 
-本应用集成了 AI 辅助写作功能，旨在帮助用户更轻松地记录，但严格遵循以下原则：
+本项目采用 **无服务器架构 (Serverless)**，利用 Cloudflare Workers + KV 存储数据，安全、低成本且极速。
 
-1.  **仅做辅助**：AI 仅用于文字层面的压缩（总结）与润色（去口语化）。
-2.  **绝对中立**：AI 不参与理解、判断、解释、建议或决策。
-3.  **用户主导**：所有生成内容仅作为“候选”，必须由用户点击“应用”才会写入。
+## 🚀 核心特性
 
-**支持的 AI 操作：**
-- **一句话总结**：基于“客观事实”生成 26 字以内的概括。
-- **事实润色**：整理语序，去除口语，保留原意与时间顺序。
+- **💎 玻璃拟态设计**：精致的 iOS 风格 UI，流畅的动画与交互体验。
+- **🤖 AI 辅助 (安全版)**：
+    - **智能压缩**：一句话总结冗长的事件（<26字）。
+    - **客观润色**：自动去除情绪化与口语表达，还原事实原貌。
+    - *特点：基于 Cloudflare Worker 代理，API Key 不暴露于前端，绝对安全。*
+- **☁️ 云端同步**：基于 Cloudflare KV 的数据存储，多设备实时同步。
+- **🔐 隐私安全**：支持访问密码保护，数据完全掌控在你手中。
+- **📱 PWA 支持**：可直接安装到手机桌面，离线亦可访问（基础功能）。
+- **🎨 深色模式**：自动跟随系统日夜切换。
 
-**隐私说明**：AI 接口仅在用户点击按钮时调用，且严格使用固定 Prompt 模板，不会发送其他无关字段。
+## 🛠️ 技术栈
 
-## 快速开始
+- **前端**：Vue 3, Vite, Glassmorphism CSS
+- **后端**：Cloudflare Workers (Edge Computing)
+- **数据库**：Cloudflare KV (Key-Value Storage)
+- **AI 服务**：Baidu ERNIE (Via OpenAI-Compatible Interface)
 
-1. **安装依赖**
-   ```bash
-   npm install
-   ```
+## 📦 快速开始
 
-2. **配置环境**
-   复制 `.env.example` 为 `.env` (如果不存在)，并配置你的后端 API 地址：
-   ```ini
-   VITE_API_URL=https://your-worker-url.workers.dev
-   
-   # AI 功能配置 (支持 OpenAI 兼容接口，如 DeepSeek, Moonshot 等)
-   VITE_AI_API_URL=https://api.openai.com/v1/chat/completions
-   VITE_AI_API_KEY=sk-your-api-key
-   VITE_AI_MODEL=gpt-3.5-turbo
-   ```
+### 1. 本地开发
 
-   > **注意**: AI 功能默认关闭，仅当配置了 API Key 后才会显示相关按钮。
+```bash
+# 安装依赖
+npm install
 
-3. **启动开发服务器**
-   ```bash
-   npm run dev
-   ```
+# 复制环境变量配置
+cp .env.example .env
 
-4. **构建生产版本**
-   ```bash
-   npm run build
-   ```
+# 启动开发服务器
+npm run dev
+```
 
-## 部署
+### 2. 部署后端 (Cloudflare Worker)
 
-本项目构建产物位于 `dist/` 目录。
-该目录默认被 git 忽略，部署时请基于构建流程重新生成，或手动上传该文件夹内容到静态托管服务。
+本项目依赖 Cloudflare Worker 作为后端 API 网关和 AI 代理。
 
-## 目录结构
+1.  登录 Cloudflare Dashboard，创建一个新的 Worker。
+2.  绑定 KV Namespace (变量名: `GROWTH_MEMOS_KV`)。
+3.  设置环境变量 (Settings -> Variables):
+    *   `BAIDU_API_KEY`: 你的百度文心千帆 API Key (`bce-v3/...`)
+4.  复制项目中的 `worker-merged.js` 代码到 Worker 编辑器并部署。
 
-- `src/components`: UI 组件
-- `src/composables`: 业务逻辑 (Auth, Theme, Data)
-- `src/assets`: 静态资源与样式
+### 3. 部署前端 (Cloudflare Pages)
+
+1.  由 GitHub 连接仓库部署。
+2.  **构建配置**:
+    *   **构建命令 (Build Command)**: `npm run build`
+    *   **构建输出目录 (Build output directory)**: `dist`
+3.  **环境变量 (Environment Variables)**:
+    *   `VITE_API_URL`: 填入你第2步部署的 Worker 地址 (例如 `https://your-worker.workers.dev`)。
+
+## 🤖 AI 原则
+
+我们在引入 AI 时设定了严格的边界，以确保工具的纯粹性：
+
+1.  **仅做辅助**：AI 仅用于文字层面的压缩与润色。
+2.  **绝对中立**：AI 不参与理解、判断、解释或建议。
+3.  **用户主导**：AI 生成内容仅为候选，必须经由用户确认才可写入。
+
+## 📂 目录结构
+
+```
+.
+├── src/
+│   ├── components/    # Vue 组件 (EditModal, LoginOverlay 等)
+│   ├── composables/   # 组合式 API (useAuth, useNotes)
+│   ├── services/      # 外部服务 (AI, API)
+│   └── ...
+├── worker-merged.js   # 后端 Worker 完整代码 (Auth + AI)
+├── public/            # 静态资源
+└── vite.config.js     # Vite 配置
+```
+
+## 📄 License
+
+MIT License. Designed with ❤️ by You.
