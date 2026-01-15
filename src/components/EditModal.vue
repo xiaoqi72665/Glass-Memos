@@ -216,12 +216,7 @@ defineExpose({ open, close })
 
                 <!-- Summary Section -->
                 <div class="form-section">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label class="form-label" style="margin-bottom:0">一句话总结</label>
-                        <button class="ai-btn" @click="handleGenerateSummary" :disabled="aiState.summaryLoading">
-                            {{ aiState.summaryLoading ? '✨ 生成中...' : '✨ AI 生成' }}
-                        </button>
-                    </div>
+                    <label class="form-label">一句话总结</label>
                     
                     <input type="text" v-model="form.summary" class="input-field title-input" placeholder="概括这次记录...">
                     
