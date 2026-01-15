@@ -1,11 +1,11 @@
 /**
- * Cloudflare Worker - Complete Version (Auth + Data Sync + AI)
+ * Cloudflare Worker - Complete Version (V2 API Key 模式)
  * 
  * 部署说明:
- * 1. 复制此代码到 Cloudflare Worker 编辑器，替换原有全部代码
- * 2. 环境变量 (Settings -> Variables):
- *    - BAIDU_API_KEY: bce-v3/...
- *    - BAIDU_MODEL: ernie-speed-128k (或其他)
+ * 1. 复制此代码到 Cloudflare Worker
+ * 2. 环境变量 (Variables):
+ *    - BAIDU_API_KEY: 填你那个 "bce-v3/..." 开头的长字符串
+ *    - BAIDU_MODEL: ernie-4.5-turbo-128k (或者其他)
  */
 
 const CORS_HEADERS = {
@@ -24,11 +24,11 @@ export default {
         }
 
         if (url.pathname === "/" || url.pathname === "") {
-            return new Response("Worker & Sync Service (+AI V2) is running!", { headers: CORS_HEADERS });
+            return new Response("Worker & Sync Service (+AI V2 Optimized) is running!", { headers: CORS_HEADERS });
         }
 
         // ===========================
-        // 🔐 Auth Helper
+        // 🔐 Auth Helper (Data Sync)
         // ===========================
         async function checkAuth(req) {
             const authHeader = req.headers.get("Authorization");
@@ -39,7 +39,7 @@ export default {
         }
 
         // ===========================
-        // Auth & Data Routes (Unchanged)
+        // Auth & Data Routes
         // ===========================
         if (url.pathname.endsWith("/auth/login") && request.method === "POST") {
             try {
@@ -78,7 +78,7 @@ export default {
         }
 
         // ===========================
-        // E. ✨ AI Combined Processing
+        // E. ✨ AI Combined Processing (V2)
         // ===========================
         if (url.pathname === '/ai/process') {
             if (request.method !== 'POST') return new Response('Method Not Allowed', { status: 405, headers: CORS_HEADERS });
@@ -90,7 +90,7 @@ export default {
 };
 
 // ===========================
-// AI Logic (Single Call, Two Steps)
+// AI Logic (V2 Direct API Key)
 // ===========================
 async function handleAIProcess(request, env) {
     try {
@@ -98,7 +98,7 @@ async function handleAIProcess(request, env) {
         if (!content) throw new Error('Content is required');
 
         const apiKey = env.BAIDU_API_KEY;
-        const model = env.BAIDU_MODEL || 'ernie-speed-128k';
+        const model = env.BAIDU_MODEL || 'ernie-4.5-turbo-128k'; // Updated default
 
         if (!apiKey) throw new Error('Server Config Error: Missing BAIDU_API_KEY');
 
@@ -128,23 +128,35 @@ async function handleAIProcess(request, env) {
 
         const apiUrl = `https://qianfan.baidubce.com/v2/chat/completions`;
 
+        // Construct Payload matching known working parameters
+        const payload = {
+            model: model,
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt }
+            ],
+            temperature: 0.1,
+            stream: false,
+            web_search: {
+                enable: false,
+                enable_trace: false
+            }
+        };
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
+                'Authorization': `Bearer ${apiKey}` // Using the bce-v3 key directly
             },
-            body: JSON.stringify({
-                model: model,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: userPrompt }
-                ],
-                temperature: 0.1,
-                // response_format removed to ensure compatibility with all models
-                stream: false
-            })
+            body: JSON.stringify(payload)
         });
+
+        // Error Handling Wrapper
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Baidu API HTTP ${response.status}: ${errorText}`);
+        }
 
         const result = await response.json();
 
@@ -152,22 +164,33 @@ async function handleAIProcess(request, env) {
             throw new Error(`Baidu API Error: ${result.error.message || JSON.stringify(result.error)}`);
         }
 
+        // Check for content in choice[0].message.content (OpenAI format)
         let outputText = result.choices?.[0]?.message?.content;
-        if (!outputText) throw new Error('Invalid API Response: No content');
 
-        // Clean up potential markdown code blocks (```json ... ```)
+        if (!outputText) {
+            // Fallback: sometimes authentication errors return a success HTTP code but strict error JSON
+            if (result.code && result.msg) {
+                throw new Error(`Baidu API Error [${result.code}]: ${result.msg}`);
+            }
+            throw new Error(`Invalid API Response: ${JSON.stringify(result)}`);
+        }
+
+        // Clean up markdown
         outputText = outputText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
 
         let jsonResult;
         try {
             jsonResult = JSON.parse(outputText);
         } catch (e) {
-            // Fallback: Try to find JSON object in text
             const match = outputText.match(/\{[\s\S]*\}/);
             if (match) {
                 jsonResult = JSON.parse(match[0]);
             } else {
-                throw new Error("Failed to parse AI JSON response");
+                jsonResult = {
+                    ok: true,
+                    polishedFact: outputText, // Fallback if regular text
+                    summary: ""
+                };
             }
         }
 
@@ -176,6 +199,7 @@ async function handleAIProcess(request, env) {
         });
 
     } catch (error) {
+        // Return explicit error reason for client debugging
         return new Response(JSON.stringify({ ok: false, reason: error.message }), {
             status: 500,
             headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' }
