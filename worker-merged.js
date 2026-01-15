@@ -141,7 +141,8 @@ async function handleAIProcess(request, env) {
                     { role: 'user', content: userPrompt }
                 ],
                 temperature: 0.1,
-                response_format: { type: "json_object" } // Try to enforce JSON if model supports
+                // response_format removed to ensure compatibility with all models
+                stream: false
             })
         });
 
