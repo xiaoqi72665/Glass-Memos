@@ -494,4 +494,19 @@ defineExpose({ open, close })
     background: rgba(255, 255, 255, 0.25);
     transform: translateY(-1px);
 }
+/* Safe Area Support (Dynamic Island) */
+.modal-header {
+    /* Existing styles implicit or inherited */
+    padding-top: max(20px, env(safe-area-inset-top)); /* Adapt to notch/island */
+}
+
+.modal-footer {
+    padding-bottom: max(20px, env(safe-area-inset-bottom)); /* Home indicator */
+}
+
+/* Ensure body content doesn't get cut off at bottom scroll */
+.modal-body {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)); 
+}
 </style>
+

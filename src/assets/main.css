@@ -232,7 +232,8 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: var(--nav-height);
+    height: calc(var(--nav-height) + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
     z-index: var(--z-navbar);
     display: flex;
     justify-content: center;
