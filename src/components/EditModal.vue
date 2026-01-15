@@ -223,10 +223,10 @@ defineExpose({ open, close })
                     <!-- Candidate View for Summary -->
                     <div v-if="aiState.summaryCandidate" class="ai-candidate-box">
                         <div class="candidate-header">
-                            <span class="ai-badge">AI 候选 · 一句话总结</span>
+                            <span class="ai-badge">🔮 AI 对本次记录的总结建议</span>
                             <div class="candidate-actions">
-                                <button class="action-btn apply" @click="applySummary">应用</button>
-                                <button class="action-btn discard" @click="discardSummary">舍弃</button>
+                                <button class="action-btn apply" @click="applySummary">✓ 采纳</button>
+                                <button class="action-btn discard" @click="discardSummary">✕ 忽略</button>
                             </div>
                         </div>
                         <div class="candidate-content">{{ aiState.summaryCandidate }}</div>
@@ -238,7 +238,7 @@ defineExpose({ open, close })
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <label class="form-label" style="margin-bottom:0">发生了什么（客观事实）</label>
                         <button class="ai-btn" @click="handleAIProcess" :disabled="aiState.processing">
-                            {{ aiState.processing ? '✨ 思考中...' : '✨ AI 辅助记录' }}
+                            {{ aiState.processing ? '✨ 正在思考...' : '✨ AI 辅助润色' }}
                         </button>
                     </div>
 
@@ -248,10 +248,10 @@ defineExpose({ open, close })
                     <!-- Candidate View for Polish -->
                     <div v-if="aiState.polishCandidate" class="ai-candidate-box polish-box">
                         <div class="candidate-header">
-                            <span class="ai-badge">AI 候选 · 润色后的事实</span>
+                            <span class="ai-badge">✨ AI 润色后的事实</span>
                             <div class="candidate-actions">
-                                <button class="action-btn apply" @click="applyPolish">应用覆盖</button>
-                                <button class="action-btn discard" @click="discardPolish">舍弃</button>
+                                <button class="action-btn apply" @click="applyPolish">✓ 覆盖原文</button>
+                                <button class="action-btn discard" @click="discardPolish">✕ 忽略</button>
                             </div>
                         </div>
                         <div class="candidate-content">{{ aiState.polishCandidate }}</div>
@@ -300,58 +300,101 @@ defineExpose({ open, close })
 </template>
 
 <style scoped>
-/* AI Specific Styles */
+/* AI Specific Styles - Enhanced */
 .ai-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
-    padding: 4px 10px;
+    padding: 6px 12px;
     font-size: 12px;
     color: var(--text-color);
     cursor: pointer;
     backdrop-filter: blur(4px);
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .ai-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
 .ai-btn:disabled {
     opacity: 0.6;
-    cursor: not-allowed;
+    cursor: wait;
 }
 
+/* Common Box Style */
 .ai-candidate-box {
-    margin-top: 10px;
-    background: rgba(var(--primary-rgb), 0.1);
-    border: 1px solid rgba(var(--primary-rgb), 0.3);
-    border-radius: 12px;
-    padding: 10px;
-    animation: fadeIn 0.3s ease;
+    margin-top: 16px;
+    background: rgba(20, 20, 25, 0.6); /* Deeper dark background */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px; /* Softer corners */
+    padding: 0;
+    animation: slideUpFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Box Polish Gradient Border */
+.ai-candidate-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.6), transparent);
+    z-index: 1;
 }
 
 .polish-box {
-    border-color: rgba(100, 200, 255, 0.4);
-    background: rgba(100, 200, 255, 0.05); 
+    background: rgba(15, 30, 40, 0.6);
 }
 
+.polish-box::before {
+    background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.7), transparent);
+}
+
+/* Header */
 .candidate-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .ai-badge {
-    font-size: 10px;
-    background: var(--primary-color);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
+/* Default Badge Color (Summary) */
+.ai-badge {
+    color: #e2a0ff;
+    text-shadow: 0 0 12px rgba(226, 160, 255, 0.3);
+}
+
+/* Polish Badge Color */
+.polish-box .ai-badge {
+    color: #80d0ff;
+    text-shadow: 0 0 12px rgba(128, 208, 255, 0.3);
+}
+
+/* Actions */
 .candidate-actions {
     display: flex;
     gap: 8px;
@@ -359,29 +402,61 @@ defineExpose({ open, close })
 
 .action-btn {
     font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 5px 12px;
+    border-radius: 8px; /* Softer buttons */
     cursor: pointer;
     border: none;
-}
-
-.action-btn.discard {
-    background: rgba(0, 0, 0, 0.1);
-    color: var(--text-color);
-    border: 1px solid rgba(255,255,255,0.2);
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .action-btn.apply {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), #8e44ad);
     color: white;
+    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.3);
 }
 
+.polish-box .action-btn.apply {
+    background: linear-gradient(135deg, #2196F3, #00BCD4);
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.action-btn.apply:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.5);
+}
+
+.action-btn.discard {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.action-btn.discard:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Content */
 .candidate-content {
     font-size: 14px;
-    line-height: 1.5;
-    color: var(--text-color);
-    padding: 4px;
+    line-height: 1.7; /* Better readability */
+    color: rgba(255, 255, 255, 0.9);
+    padding: 16px;
     white-space: pre-wrap;
+    background: transparent; /* Clean look */
+}
+
+/* Animations */
+@keyframes slideUpFade {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px) scale(0.98); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
 }
 
 /* Existing styles preserved */
