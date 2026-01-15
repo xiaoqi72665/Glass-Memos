@@ -1,6 +1,6 @@
 // --- 配置 ---
 // ⚠️ 填入你的 Worker 地址，例如 "https://growth-memos-auth.xxx.workers.dev"
-const API_URL = "https://growth-memos-auth.2536319853.workers.dev"; 
+const API_URL = "https://growth-memos-auth.2536319853.workers.dev";
 const STORE_KEY = 'glass_memos_v2';
 const THEME_KEY = 'glass_memos_theme';
 const TOKEN_KEY = 'growth_memos_token';
@@ -12,7 +12,7 @@ let searchQuery = '';
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    
+
     // 1. 尝试自动登录
     checkAuth().then(isAuthenticated => {
         if (isAuthenticated) {
@@ -50,14 +50,14 @@ async function checkAuth() {
 
 async function unlockApp() {
     document.getElementById('loginOverlay').classList.add('hidden');
-    
+
     // 🚀 登录成功后，优先从云端拉取最新数据
     if (API_URL) {
         await syncDataFromCloud();
     } else {
         loadNotesLocal(); // 降级：仅加载本地
     }
-    
+
     renderApp();
     bindAppEvents();
 }
@@ -96,7 +96,7 @@ async function pushDataToCloud() {
     try {
         await fetch(`${API_URL}/api/data`, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
@@ -159,7 +159,7 @@ async function handleLogin() {
             unlockApp();
         }, 500);
     }
-    
+
     btn.classList.remove('loading');
     btn.textContent = '解锁进入';
 }
@@ -219,11 +219,25 @@ function updateThemeIcon(isDark) {
 
 // --- 应用内事件 ---
 function bindAppEvents() {
-    document.getElementById('btnTheme').onclick = toggleTheme;
-    document.getElementById('btnLogout').onclick = handleLogout;
-    document.getElementById('btnNew').onclick = () => openEditModal();
-    document.getElementById('btnExport').onclick = exportData;
-    document.getElementById('btnImportTrigger').onclick = () => document.getElementById('importFile').click();
+    // document.getElementById('btnTheme').onclick = toggleTheme;
+    bindBoth('btnThemeNavbar', 'btnThemeDock', toggleTheme);
+
+    // document.getElementById('btnLogout').onclick = handleLogout;
+    bindBoth('btnLogoutNavbar', 'btnLogoutDock', handleLogout);
+
+    // 绑定两个新建按钮 (适配移动端和桌面端)
+    const btnNewNavbar = document.getElementById('btnNewNavbar');
+    if (btnNewNavbar) btnNewNavbar.onclick = () => openEditModal();
+
+    const btnNewDock = document.getElementById('btnNewDock');
+    if (btnNewDock) btnNewDock.onclick = () => openEditModal();
+
+    // document.getElementById('btnExport').onclick = exportData;
+    bindBoth('btnExportNavbar', 'btnExportDock', exportData);
+
+    // document.getElementById('btnImportTrigger').onclick = ...
+    bindBoth('btnImportTriggerNavbar', 'btnImportTriggerDock', () => document.getElementById('importFile').click());
+
     document.getElementById('importFile').onchange = importData;
     document.getElementById('searchInput').oninput = (e) => {
         searchQuery = e.target.value.trim();
@@ -246,6 +260,14 @@ function bindAppEvents() {
             if (editModal.classList.contains('open')) saveNote();
         }
     });
+}
+
+// 辅助绑定函数
+function bindBoth(navbarId, dockId, handler) {
+    const navBtn = document.getElementById(navbarId);
+    if (navBtn) navBtn.onclick = handler;
+    const dockBtn = document.getElementById(dockId);
+    if (dockBtn) dockBtn.onclick = handler;
 }
 
 // --- 渲染逻辑 ---
@@ -278,7 +300,7 @@ function createTagBtn(text, isActive) {
 function renderList() {
     const container = document.getElementById('memoList');
     const empty = document.getElementById('emptyState');
-    
+
     let list = notes.filter(n => {
         const matchTag = currentFilter ? n.tags.includes(currentFilter) : true;
         const q = searchQuery.toLowerCase();
@@ -320,7 +342,7 @@ function openPreview(id) {
     const note = notes.find(n => n.id === id);
     if (!note) return;
     const modal = document.getElementById('previewOverlay');
-    
+
     document.getElementById('previewDate').innerText = formatDate(note.date);
     document.getElementById('previewWeather').innerText = note.weather || '';
     document.getElementById('previewMood').innerText = note.mood || '';
@@ -370,11 +392,11 @@ function openEditModal(id = null) {
     const modal = document.getElementById('modalOverlay');
     const titleEl = document.getElementById('modalTitle');
     const delBtn = document.getElementById('btnDelete');
-    
+
     document.getElementById('noteId').value = '';
     document.getElementById('noteDate').value = new Date().toISOString().split('T')[0];
     document.getElementById('noteWeather').value = '☀️';
-    document.getElementById('noteMood').value = '😐'; 
+    document.getElementById('noteMood').value = '😐';
     document.getElementById('inpSummary').value = '';
     document.getElementById('inpFact').value = '';
     document.getElementById('inpReaction').value = '';
@@ -437,7 +459,7 @@ function saveNote() {
     const combinedContent = `[事实]: ${fact}\n[反应]: ${reaction}\n[模式]: ${pattern}\n[实验]: ${experiment}`.trim();
     const noteData = {
         id: id || Date.now().toString(),
-        date, weather, mood, 
+        date, weather, mood,
         tags: [...new Set(tags)], updatedAt: new Date().toISOString(),
         summary, fact, reaction, pattern, experiment,
         title: summary || '无标题', content: combinedContent
@@ -447,8 +469,8 @@ function saveNote() {
         const idx = notes.findIndex(n => n.id === id);
         if (idx > -1) notes[idx] = noteData;
     } else { notes.push(noteData); }
-    
-    saveStorage(); 
+
+    saveStorage();
     closeEditModal();
 }
 
@@ -460,8 +482,8 @@ function deleteNote() {
 }
 
 function exportData() {
-    const blob = new Blob([JSON.stringify(notes, null, 2)], {type: 'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `growth_memos_${new Date().toISOString().slice(0,10)}.json`; a.click();
+    const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `growth_memos_${new Date().toISOString().slice(0, 10)}.json`; a.click();
 }
 function importData(e) {
     const file = e.target.files[0]; if (!file) return;
@@ -470,15 +492,15 @@ function importData(e) {
         try {
             const data = JSON.parse(evt.target.result);
             if (Array.isArray(data)) {
-                if(confirm('导入将合并数据并同步到云端。继续吗？')) {
+                if (confirm('导入将合并数据并同步到云端。继续吗？')) {
                     const map = new Map(notes.map(n => [n.id, n]));
                     data.forEach(n => map.set(n.id, n));
                     notes = Array.from(map.values());
-                    saveStorage(); 
+                    saveStorage();
                     alert('导入成功');
                 }
             }
-        } catch(err) { alert('文件格式错误'); }
+        } catch (err) { alert('文件格式错误'); }
         e.target.value = '';
     };
     reader.readAsText(file);
