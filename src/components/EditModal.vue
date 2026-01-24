@@ -191,7 +191,7 @@ defineExpose({ open, close })
 </script>
 
 <template>
-    <div class="modal-overlay" :class="{ open: isOpen }" @click.self="close">
+    <div class="modal-overlay" :class="{ open: isOpen }">
         <div class="modal-card glass-modal">
             <div class="modal-header">
                 <span id="modalTitle">{{ isEditMode ? '编辑观察' : '新建观察' }}</span>
