@@ -293,5 +293,91 @@ function getMoodIcon(m) {
                 </div>
             </section>
         </div>
+
+        <div class="mobile-drawer">
+            <details class="drawer-card glass-panel">
+                <summary class="drawer-header">
+                    <span>统计与标签</span>
+                    <span class="drawer-meta">{{ stats.total }} 条 · {{ stats.tags }} 标签</span>
+                </summary>
+                <div class="drawer-body">
+                    <div class="side-section">
+                        <div class="section-title">数据记录</div>
+                        <div class="stat-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">{{ stats.total }}</div>
+                                <div class="stat-label">累计</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">{{ stats.today }}</div>
+                                <div class="stat-label">今日</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">{{ stats.week }}</div>
+                                <div class="stat-label">本周</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">{{ stats.month }}</div>
+                                <div class="stat-label">本月</div>
+                            </div>
+                        </div>
+                        <div class="stat-inline">
+                            <span>连续记录</span>
+                            <strong>{{ streaks.current }} 天</strong>
+                        </div>
+                        <div class="stat-inline">
+                            <span>最长连续</span>
+                            <strong>{{ streaks.best }} 天</strong>
+                        </div>
+                        <div class="stat-inline">
+                            <span>最近记录</span>
+                            <strong>{{ streaks.lastDate || '-' }}</strong>
+                        </div>
+                        <div class="stat-inline">
+                            <span>平均字数</span>
+                            <strong>{{ stats.avgLength }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="side-section">
+                        <div class="section-title">本周节奏</div>
+                        <div class="week-activity">
+                            <div
+                                v-for="day in weekSeries"
+                                :key="day.key"
+                                class="week-bar"
+                                :style="{ '--ratio': day.ratio }"
+                                :data-empty="day.count === 0"
+                                :title="`${day.label} ${day.count}`"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div class="side-section">
+                        <div class="section-title">标签</div>
+                        <div class="tag-list">
+                            <button
+                                class="tag-item"
+                                :class="{ active: currentFilter === null }"
+                                @click="currentFilter = null"
+                            >
+                                <span>全部</span>
+                                <em>{{ stats.total }}</em>
+                            </button>
+                            <button
+                                v-for="[tag, count] in tagStats"
+                                :key="tag"
+                                class="tag-item"
+                                :class="{ active: currentFilter === tag }"
+                                @click="currentFilter = tag"
+                            >
+                                <span>#{{ tag }}</span>
+                                <em>{{ count }}</em>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
     </main>
 </template>
