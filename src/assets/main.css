@@ -1,31 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+
 :root {
     /* ================= 浅色模式 (默认) ================= */
-    --primary: #007AFF;
-    --primary-light: rgba(0, 122, 255, 0.1);
-    --primary-active: #0062cc;
-    --danger: #FF3B30;
+    --primary: #5B7C72;
+    --primary-color: var(--primary);
+    --primary-rgb: 91, 124, 114;
+    --primary-light: rgba(91, 124, 114, 0.14);
+    --primary-active: #48665D;
+    --primary-glow: rgba(91, 124, 114, 0.28);
+    --accent: #7B9B8F;
+    --danger: #B04A4A;
 
-    --text-main: #1d1d1f;
-    --text-sub: #86868b;
-    --text-label: #6e6e73;
+    --text-main: #1F2A26;
+    --text-sub: #6C7772;
+    --text-label: #7B8782;
 
-    --bg-page: #F2F2F7;
-    --bg-input: rgba(118, 118, 128, 0.12);
-    --bg-card: rgba(255, 255, 255, 0.65);
+    --bg-page: #E8EDE9;
+    --bg-page-alt: #E1E7E3;
+    --bg-input: rgba(86, 102, 95, 0.12);
+    --bg-card: rgba(246, 249, 247, 0.65);
 
     /* 玻璃参数 */
-    --glass-bg: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --glass-blur: 20px;
-    --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    --glass-bg: rgba(245, 248, 246, 0.78);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-sheen: linear-gradient(145deg, rgba(255, 255, 255, 0.65), rgba(232, 240, 236, 0.3));
+    --glass-blur: 22px;
+    --glass-shadow: 0 24px 50px rgba(20, 28, 24, 0.18);
+
+    --focus-ring: rgba(91, 124, 114, 0.25);
 
     /* 按钮背景 */
-    --btn-secondary-bg: #E5E5EA;
-    --btn-secondary-text: #000;
+    --btn-secondary-bg: #DDE3DF;
+    --btn-secondary-text: #1F2A26;
 
     /* 实验块高亮 */
-    --exp-bg: linear-gradient(to bottom right, rgba(0, 122, 255, 0.08), rgba(0, 122, 255, 0.02));
-    --exp-border: rgba(0, 122, 255, 0.2);
+    --exp-bg: linear-gradient(to bottom right, rgba(91, 124, 114, 0.12), rgba(91, 124, 114, 0.03));
+    --exp-border: rgba(91, 124, 114, 0.22);
+
+    --page-gradient: radial-gradient(1200px 600px at 10% -10%, rgba(125, 150, 140, 0.18), transparent 60%),
+        radial-gradient(900px 600px at 92% 8%, rgba(160, 180, 170, 0.16), transparent 60%),
+        linear-gradient(180deg, #E8EDE9 0%, #E2E8E4 100%);
+
+    --font-sans: "Raleway", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif;
+    --font-serif: "Lora", "Times New Roman", serif;
 
     /* 尺寸与层级 */
     --nav-height: 60px;
@@ -40,23 +57,31 @@
 
 /* ================= 深色模式 ================= */
 [data-theme="dark"] {
-    --text-main: #f5f5f7;
-    --text-sub: #8e8e93;
-    --text-label: #a1a1a6;
+    --text-main: #E6ECE8;
+    --text-sub: #A5B0AA;
+    --text-label: #909A95;
 
-    --bg-page: #000000;
-    --bg-input: rgba(255, 255, 255, 0.12);
-    --bg-card: rgba(28, 28, 30, 0.6);
+    --bg-page: #0F1412;
+    --bg-page-alt: #111816;
+    --bg-input: rgba(230, 236, 232, 0.08);
+    --bg-card: rgba(20, 26, 23, 0.62);
 
-    --glass-bg: rgba(28, 28, 30, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    --glass-bg: rgba(20, 26, 23, 0.78);
+    --glass-border: rgba(215, 226, 221, 0.12);
+    --glass-sheen: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(120, 140, 130, 0.05));
+    --glass-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
 
-    --btn-secondary-bg: #2c2c2e;
-    --btn-secondary-text: #fff;
+    --btn-secondary-bg: #202826;
+    --btn-secondary-text: #E6ECE8;
 
-    --exp-bg: linear-gradient(to bottom right, rgba(10, 132, 255, 0.2), rgba(10, 132, 255, 0.05));
-    --exp-border: rgba(10, 132, 255, 0.3);
+    --exp-bg: linear-gradient(to bottom right, rgba(91, 124, 114, 0.2), rgba(91, 124, 114, 0.05));
+    --exp-border: rgba(91, 124, 114, 0.35);
+
+    --focus-ring: rgba(120, 165, 150, 0.25);
+
+    --page-gradient: radial-gradient(900px 520px at 8% -8%, rgba(90, 120, 110, 0.14), transparent 60%),
+        radial-gradient(900px 520px at 90% 0%, rgba(80, 110, 100, 0.12), transparent 65%),
+        linear-gradient(180deg, #0F1412 0%, #0B1010 100%);
 }
 
 /* --- 全局重置 --- */
@@ -69,13 +94,24 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--bg-page);
+    background-image: var(--page-gradient);
+    background-attachment: fixed;
     color: var(--text-main);
     overflow-y: auto;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.app-title,
+.login-title,
+.card-title,
+.preview-title,
+#modalTitle {
+    font-family: var(--font-serif);
+    letter-spacing: 0.2px;
 }
 
 /* --- 动态背景 --- */
@@ -97,7 +133,7 @@ body {
     left: -10vw;
     width: 60vw;
     height: 60vw;
-    background: #a2d2ff;
+    background: #C3D2C9;
 }
 
 .blob-2 {
@@ -105,12 +141,13 @@ body {
     right: -10vw;
     width: 70vw;
     height: 70vw;
-    background: #ffc8dd;
+    background: #CCD9D1;
 }
 
 /* --- 玻璃通用 --- */
 .glass-bar {
     background: var(--glass-bg);
+    background-image: var(--glass-sheen);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
     border-bottom: 1px solid var(--glass-border);
@@ -119,6 +156,7 @@ body {
 
 .glass-modal {
     background: var(--glass-bg);
+    background-image: var(--glass-sheen);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     box-shadow: var(--glass-shadow);
@@ -294,8 +332,8 @@ body {
 }
 
 .search-input-nav:focus {
-    background: rgba(120, 120, 128, 0.2);
-    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+    background: rgba(86, 102, 95, 0.16);
+    box-shadow: 0 0 0 2px var(--focus-ring);
 }
 
 .navbar-actions {
@@ -336,7 +374,7 @@ body {
 }
 
 .icon-btn:hover {
-    background: rgba(120, 120, 128, 0.15);
+    background: var(--primary-light);
     transform: scale(1.05);
 }
 
@@ -350,7 +388,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.1s, background-color 0.2s;
-    box-shadow: 0 4px 10px rgba(0, 122, 255, 0.25);
+    box-shadow: 0 4px 10px var(--primary-glow);
 }
 
 .primary-btn-sm {
@@ -390,9 +428,9 @@ body {
 
     background: linear-gradient(135deg, var(--primary), var(--primary-active));
     box-shadow:
-        0 8px 20px rgba(0, 122, 255, 0.3),
-        inset 0 2px 4px rgba(255, 255, 255, 0.3),
-        inset 0 -3px 6px rgba(0, 0, 0, 0.15);
+        0 8px 20px var(--primary-glow),
+        inset 0 2px 4px rgba(255, 255, 255, 0.35),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.1);
 
     /* ✨ 新增：确保 SVG 颜色继承按钮文字颜色 (白色) */
@@ -462,7 +500,7 @@ body {
 }
 
 .search-input:focus {
-    background: rgba(120, 120, 128, 0.2);
+    background: rgba(86, 102, 95, 0.16);
 }
 
 .tags-row {
@@ -487,7 +525,7 @@ body {
     border-radius: 14px;
     font-size: 13px;
     font-weight: 500;
-    background: rgba(120, 120, 128, 0.1);
+    background: rgba(86, 102, 95, 0.1);
     border: 1px solid transparent;
     color: var(--text-sub);
     cursor: pointer;
@@ -496,12 +534,12 @@ body {
 }
 
 .tag-btn:hover {
-    background: rgba(120, 120, 128, 0.2);
+    background: rgba(86, 102, 95, 0.18);
 }
 
 .tag-btn.active {
-    background: var(--text-main);
-    color: var(--bg-page);
+    background: var(--primary);
+    color: #F7FAF8;
 }
 
 /* ========================================= */
@@ -531,6 +569,7 @@ body {
 
 .memo-card {
     background: var(--bg-card);
+    background-image: var(--glass-sheen);
     border: 1px solid var(--glass-border);
     border-radius: 24px;
     padding: 18px;
@@ -541,6 +580,8 @@ body {
     gap: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     height: 200px;
+    backdrop-filter: blur(calc(var(--glass-blur) - 6px));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 6px));
     /* Force fixed height */
 }
 
@@ -585,7 +626,7 @@ body {
 .tag-badge {
     font-size: 11px;
     color: var(--primary);
-    background: rgba(0, 122, 255, 0.15);
+    background: var(--primary-light);
     padding: 3px 8px;
     border-radius: 6px;
     font-weight: 600;
@@ -628,7 +669,7 @@ body {
 
     .search-input:focus {
         background: var(--bg-card);
-        box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        box-shadow: 0 0 0 4px var(--focus-ring);
     }
 
     #app-container {
@@ -646,6 +687,7 @@ body {
         transform: translateY(-3px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         background: var(--glass-bg);
+        background-image: var(--glass-sheen);
     }
 }
 
@@ -658,7 +700,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(13, 18, 16, 0.38);
     z-index: var(--z-modal);
     display: none;
     justify-content: center;
@@ -724,7 +766,7 @@ body {
 .close-btn {
     width: 30px;
     height: 30px;
-    background: rgba(120, 120, 128, 0.15);
+    background: rgba(86, 102, 95, 0.16);
     color: var(--text-sub);
     border-radius: 50%;
     font-size: 14px;
@@ -736,7 +778,7 @@ body {
 }
 
 .close-btn:active {
-    background: rgba(120, 120, 128, 0.3);
+    background: rgba(86, 102, 95, 0.3);
     color: var(--text-main);
 }
 
@@ -777,9 +819,9 @@ body {
 }
 
 .input-field:focus {
-    background: rgba(120, 120, 128, 0.15);
+    background: rgba(86, 102, 95, 0.14);
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+    box-shadow: 0 0 0 4px var(--focus-ring);
 }
 
 .title-input {
@@ -820,18 +862,18 @@ body {
 }
 
 .highlight-input {
-    background: rgba(0, 122, 255, 0.05);
-    border: 1px solid rgba(0, 122, 255, 0.2);
+    background: rgba(91, 124, 114, 0.08);
+    border: 1px solid rgba(91, 124, 114, 0.25);
 }
 
 [data-theme="dark"] .highlight-input {
-    background: rgba(10, 132, 255, 0.15);
-    border-color: rgba(10, 132, 255, 0.4);
+    background: rgba(91, 124, 114, 0.2);
+    border-color: rgba(91, 124, 114, 0.45);
 }
 
 .highlight-input:focus {
     background: var(--bg-input);
-    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+    box-shadow: 0 0 0 4px var(--focus-ring);
 }
 
 /* 元数据行 */
@@ -870,6 +912,7 @@ body {
     display: flex;
     gap: 12px;
     background: var(--glass-bg);
+    background-image: var(--glass-sheen);
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
 }
 
@@ -894,14 +937,14 @@ body {
 }
 
 .danger-btn {
-    background: rgba(255, 59, 48, 0.15);
+    background: rgba(176, 74, 74, 0.15);
     color: var(--danger);
 }
 
 .save-btn {
-    background: linear-gradient(135deg, #007AFF, #0055ff);
+    background: linear-gradient(135deg, var(--primary), var(--primary-active));
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+    box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 /* ========================================= */
@@ -919,7 +962,7 @@ body {
 }
 
 .edit-icon-btn {
-    background: rgba(120, 120, 128, 0.1);
+    background: rgba(86, 102, 95, 0.12);
     width: 36px;
     height: 36px;
     font-size: 16px;
@@ -932,7 +975,7 @@ body {
 }
 
 .danger-icon-btn:hover {
-    background: rgba(255, 59, 48, 0.1);
+    background: rgba(176, 74, 74, 0.12);
 }
 
 .preview-meta {
@@ -945,8 +988,8 @@ body {
 .meta-date {
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-sub);
-    background: rgba(120, 120, 128, 0.1);
+    color: var(--primary);
+    background: var(--primary-light);
     padding: 4px 10px;
     border-radius: 8px;
 }
@@ -1112,7 +1155,7 @@ body {
     transform: translateX(-50%) translateY(-30%);
     width: 56px;
     height: 56px;
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+    box-shadow: 0 8px 24px var(--primary-glow);
 }
 
 .dock-new-btn:hover {

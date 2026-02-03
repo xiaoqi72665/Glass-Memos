@@ -91,3 +91,6 @@ dist
 
 # Local backup directory
 _backup/
+
+# Codex directory
+.codex/

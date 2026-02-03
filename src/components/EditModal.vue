@@ -302,26 +302,27 @@ defineExpose({ open, close })
 <style scoped>
 /* AI Specific Styles - Enhanced */
 .ai-btn {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--glass-bg);
+    background-image: var(--glass-sheen);
+    border: 1px solid var(--glass-border);
     border-radius: 12px;
     padding: 6px 12px;
     font-size: 12px;
-    color: var(--text-color);
+    color: var(--text-main);
     cursor: pointer;
     backdrop-filter: blur(4px);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(20, 28, 24, 0.12);
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
 .ai-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: var(--bg-card);
+    border-color: var(--glass-border);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 6px 16px rgba(20, 28, 24, 0.18);
 }
 
 .ai-btn:disabled {
@@ -332,12 +333,13 @@ defineExpose({ open, close })
 /* Common Box Style */
 .ai-candidate-box {
     margin-top: 16px;
-    background: rgba(20, 20, 25, 0.6); /* Deeper dark background */
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--glass-bg);
+    background-image: var(--glass-sheen);
+    border: 1px solid var(--glass-border);
     border-radius: 16px; /* Softer corners */
     padding: 0;
     animation: slideUpFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 24px rgba(20, 28, 24, 0.18);
     overflow: hidden;
     position: relative;
 }
@@ -355,11 +357,12 @@ defineExpose({ open, close })
 }
 
 .polish-box {
-    background: rgba(15, 30, 40, 0.6);
+    background: rgba(91, 124, 114, 0.18);
+    background-image: var(--glass-sheen);
 }
 
 .polish-box::before {
-    background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.7), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.6), transparent);
 }
 
 /* Header */
@@ -368,8 +371,8 @@ defineExpose({ open, close })
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .ai-badge {
@@ -384,14 +387,14 @@ defineExpose({ open, close })
 
 /* Default Badge Color (Summary) */
 .ai-badge {
-    color: #e2a0ff;
-    text-shadow: 0 0 12px rgba(226, 160, 255, 0.3);
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.2);
 }
 
 /* Polish Badge Color */
 .polish-box .ai-badge {
-    color: #80d0ff;
-    text-shadow: 0 0 12px rgba(128, 208, 255, 0.3);
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(123, 155, 143, 0.25);
 }
 
 /* Actions */
@@ -411,37 +414,37 @@ defineExpose({ open, close })
 }
 
 .action-btn.apply {
-    background: linear-gradient(135deg, var(--primary-color), #8e44ad);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     color: white;
-    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.3);
+    box-shadow: 0 2px 8px var(--primary-glow);
 }
 
 .polish-box .action-btn.apply {
-    background: linear-gradient(135deg, #2196F3, #00BCD4);
-    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+    background: linear-gradient(135deg, var(--accent), var(--primary-active));
+    box-shadow: 0 2px 8px var(--primary-glow);
 }
 
 .action-btn.apply:hover {
     transform: translateY(-1px);
     filter: brightness(1.1);
-    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.5);
+    box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 .action-btn.discard {
     background: transparent;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-sub);
 }
 
 .action-btn.discard:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--bg-input);
+    color: var(--text-main);
 }
 
 /* Content */
 .candidate-content {
     font-size: 14px;
     line-height: 1.7; /* Better readability */
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-main);
     padding: 16px;
     white-space: pre-wrap;
     background: transparent; /* Clean look */
@@ -480,8 +483,8 @@ defineExpose({ open, close })
 }
 
 .tag-pill {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--bg-input);
+    border: 1px solid var(--glass-border);
     border-radius: 20px;
     padding: 4px 10px;
     font-size: 0.8rem;
@@ -491,7 +494,7 @@ defineExpose({ open, close })
 }
 
 .tag-pill:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--primary-light);
     transform: translateY(-1px);
 }
 /* Safe Area Support (Dynamic Island) */
