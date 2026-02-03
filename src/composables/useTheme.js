@@ -6,9 +6,8 @@ const isDark = ref(false)
 export function useTheme() {
     function initTheme() {
         const savedTheme = localStorage.getItem(THEME_KEY)
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        if (savedTheme === 'dark') {
             setDark(true)
         } else {
             setDark(false)
