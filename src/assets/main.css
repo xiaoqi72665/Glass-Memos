@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap');
 
 :root {
     /* ================= 浅色模式 (默认) ================= */
@@ -23,6 +23,8 @@
     /* 玻璃参数 */
     --glass-bg: rgba(245, 248, 246, 0.78);
     --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-border-strong: rgba(130, 150, 140, 0.45);
+    --glass-edge: rgba(255, 255, 255, 0.7);
     --glass-sheen: linear-gradient(145deg, rgba(255, 255, 255, 0.65), rgba(232, 240, 236, 0.3));
     --glass-blur: 22px;
     --glass-shadow: 0 24px 50px rgba(20, 28, 24, 0.18);
@@ -43,8 +45,8 @@
         radial-gradient(900px 600px at 92% 8%, rgba(160, 180, 170, 0.16), transparent 60%),
         linear-gradient(180deg, #E8EDE9 0%, #E2E8E4 100%);
 
-    --font-sans: "Raleway", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif;
-    --font-serif: "Lora", "Times New Roman", serif;
+    --font-sans: "Raleway", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif;
+    --font-serif: "Lora", "Noto Serif SC", "Songti SC", "STSong", "Times New Roman", serif;
 
     /* 尺寸与层级 */
     --nav-height: 60px;
@@ -70,6 +72,8 @@
 
     --glass-bg: rgba(20, 26, 23, 0.78);
     --glass-border: rgba(215, 226, 221, 0.12);
+    --glass-border-strong: rgba(215, 226, 221, 0.18);
+    --glass-edge: rgba(255, 255, 255, 0.08);
     --glass-sheen: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(120, 140, 130, 0.05));
     --glass-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
 
@@ -598,8 +602,8 @@ body {
 .glass-panel {
     background: var(--glass-bg);
     background-image: var(--glass-sheen);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border-strong);
+    box-shadow: 0 1px 0 var(--glass-edge) inset, var(--glass-shadow);
     backdrop-filter: blur(calc(var(--glass-blur) - 4px));
     -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 4px));
 }
@@ -634,7 +638,8 @@ body {
     border-radius: 14px;
     padding: 12px;
     background: var(--bg-card);
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--glass-border-strong);
+    box-shadow: 0 1px 0 var(--glass-edge) inset;
     display: flex;
     flex-direction: column;
     gap: 6px;
