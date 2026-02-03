@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { useTheme } from '../composables/useTheme'
 import { useAuth } from '../composables/useAuth'
 import { useNotes } from '../composables/useNotes'
@@ -35,7 +35,7 @@ function handleImport(e) {
         }
         e.target.value = ''
     }
-    reader.readAsText(file) // fixed: was file, supposed to be file object
+    reader.readAsText(file)
 }
 </script>
 
@@ -71,7 +71,7 @@ function handleImport(e) {
                 </button>
             </div>
 
-            <!-- 居中新建按钮 -->
+            <!-- 居中新增按钮 -->
             <button class="primary-btn circle-btn dock-new-btn" @click="emit('open-edit')" aria-label="新建">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                     stroke-linecap="round" stroke-linejoin="round">

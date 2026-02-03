@@ -1,10 +1,24 @@
 ﻿<script setup>
 import { useNotes } from '../composables/useNotes'
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const { notes, filteredNotes, currentFilter, allTags, searchQuery } = useNotes()
 
 const emit = defineEmits(['preview'])
+
+const isDrawerOpen = ref(false)
+
+function handleToggleDrawer() {
+    isDrawerOpen.value = !isDrawerOpen.value
+}
+
+onMounted(() => {
+    window.addEventListener('toggle-stats-drawer', handleToggleDrawer)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('toggle-stats-drawer', handleToggleDrawer)
+})
 
 function toLocalDateString(dateObj) {
     const y = dateObj.getFullYear()
@@ -294,12 +308,12 @@ function getMoodIcon(m) {
             </section>
         </div>
 
-        <div class="mobile-drawer">
-            <details class="drawer-card glass-panel">
-                <summary class="drawer-header">
+        <div class="mobile-drawer" :class="{ open: isDrawerOpen }">
+            <div class="drawer-card glass-panel">
+                <div class="drawer-header">
                     <span>统计与标签</span>
                     <span class="drawer-meta">{{ stats.total }} 条 · {{ stats.tags }} 标签</span>
-                </summary>
+                </div>
                 <div class="drawer-body">
                     <div class="side-section">
                         <div class="section-title">数据记录</div>
@@ -377,7 +391,7 @@ function getMoodIcon(m) {
                         </div>
                     </div>
                 </div>
-            </details>
+            </div>
         </div>
     </main>
 </template>

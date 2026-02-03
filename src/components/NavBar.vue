@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { useTheme } from '../composables/useTheme'
 import { useAuth } from '../composables/useAuth'
 import { useNotes } from '../composables/useNotes'
@@ -7,6 +7,10 @@ import { ref } from 'vue'
 const { isDark, toggleTheme } = useTheme()
 const { logout } = useAuth()
 const { notes, importData, searchQuery } = useNotes()
+
+function toggleStatsDrawer() {
+    window.dispatchEvent(new CustomEvent('toggle-stats-drawer'))
+}
 
 function handleExport() {
     const blob = new Blob([JSON.stringify(notes.value, null, 2)], { type: 'application/json' })
@@ -45,12 +49,12 @@ const emit = defineEmits(['open-edit'])
         <div class="navbar-content">
             <!-- Left: Title -->
             <div class="navbar-left">
-                 <h1 class="app-title">映照</h1>
+                <h1 class="app-title">映照</h1>
             </div>
 
             <!-- Middle: Search -->
             <div class="navbar-search">
-                 <div class="search-wrapper-nav">
+                <div class="search-wrapper-nav">
                     <svg class="search-icon-nav" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8" />
@@ -58,6 +62,15 @@ const emit = defineEmits(['open-edit'])
                     </svg>
                     <input type="text" v-model="searchQuery" class="search-input-nav" placeholder="搜索...">
                 </div>
+                <button class="search-stats-btn" @click="toggleStatsDrawer" title="数据统计" aria-label="数据统计">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" y1="19" x2="20" y2="19" />
+                        <rect x="6" y="10" width="3" height="7" rx="1" />
+                        <rect x="11" y="6" width="3" height="11" rx="1" />
+                        <rect x="16" y="13" width="3" height="4" rx="1" />
+                    </svg>
+                </button>
             </div>
 
             <!-- Right: Actions -->

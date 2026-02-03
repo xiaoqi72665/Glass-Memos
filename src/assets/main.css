@@ -334,7 +334,8 @@ body {
     max-width: 400px;
     /* Limit width on desktop */
     display: flex;
-    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 .search-wrapper-nav {
@@ -362,6 +363,31 @@ body {
     font-size: 14px;
     color: var(--text-main);
     transition: all 0.2s;
+}
+
+.search-stats-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary-light);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.search-stats-btn:hover {
+    background: rgba(var(--primary-rgb), 0.25);
+    transform: translateY(-1px);
+}
+
+@media (min-width: 820px) {
+    .search-stats-btn {
+        display: none;
+    }
 }
 
 .search-input-nav:focus {
@@ -741,6 +767,16 @@ body {
     bottom: calc(70px + env(safe-area-inset-bottom));
     z-index: var(--z-toolbar);
     display: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-drawer.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
 }
 
 .drawer-card {
@@ -750,8 +786,6 @@ body {
 }
 
 .drawer-header {
-    list-style: none;
-    cursor: pointer;
     padding: 14px 18px;
     display: flex;
     align-items: center;
@@ -759,10 +793,6 @@ body {
     font-size: 14px;
     color: var(--text-main);
     font-weight: 600;
-}
-
-.drawer-header::-webkit-details-marker {
-    display: none;
 }
 
 .drawer-meta {
@@ -776,6 +806,8 @@ body {
     border-top: 1px solid var(--glass-border);
     background: var(--glass-bg);
     background-image: var(--glass-sheen);
+    max-height: 68vh;
+    overflow-y: auto;
 }
 
 .grid-layout {
