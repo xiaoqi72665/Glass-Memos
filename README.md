@@ -91,4 +91,4 @@ npm run dev
 
 ## 📄 License
 
-MIT License. Designed with ❤️ by You.
+This project is licensed under the [MIT License](./LICENSE).
